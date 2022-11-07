@@ -118,30 +118,29 @@ export async function poolRoutes(fastify: FastifyInstance) {
     },
     include: {
       _count: {
-        select: {
-          participants: true
-        }
-      },
-
-      participants: {
-        select: {
-          id: true,
-          user: {
-            select: {
-              avatarUrl: true,
-            }
+          select: {
+              participants: true,
           }
-        },
-        take: 4,
       },
+      participants: {
+          select: {
+              id: true,
 
+              user: {
+                  select: {
+                      avatarUrl: true,
+                  }
+              }
+          },
+          take: 4,
+      },
       owner: {
-        select: {
-          id: true,
-          name: true,
-        }
-      }
-    }
+          select: {
+              id: true,
+              name: true,
+          }
+      },
+  },
     })
     return {pools}
     
@@ -154,36 +153,35 @@ export async function poolRoutes(fastify: FastifyInstance) {
       id: z.string(),
     })
     const { id } = getPoolParams.parse(request.params)
-    const pool = await prisma.pool.findUnique({
-      where: {
-       id,
-    },
-    include: {
-      _count: {
-        select: {
-          participants: true
-        }
-      },
-
-      participants: {
-        select: {
-          id: true,
-          user: {
+    const pool = await prisma.pool.findFirst({
+      include: {
+        _count: {
             select: {
-              avatarUrl: true,
+                participants: true,
             }
-          }
         },
-        take: 4,
-      },
+        participants: {
+            select: {
+                id: true,
 
-      owner: {
-        select: {
-          id: true,
-          name: true,
-        }
-      }
-    }
+                user: {
+                    select: {
+                        avatarUrl: true,
+                    }
+                }
+            },
+            take: 4,
+        },
+        owner: {
+            select: {
+                id: true,
+                name: true,
+            }
+        },
+    },
+            where: {
+                id,
+            },
     })
     return {pool}
     
